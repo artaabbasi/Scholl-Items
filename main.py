@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, messagebox, Toplevel, Tk, Listbox
+from tkinter import ttk, messagebox, Toplevel, Tk, Listbox, ANCHOR, Button
 import json
 
 class Item():
@@ -154,7 +154,26 @@ def show_data(root, items):
         listbox.insert(i, item_data)
         # ttk.Label(win, text=item_data).pack(fill='x', expand=True, pady=10)
     type_label.pack()
+    def selected_item():
+        for i in listbox.curselection():
+            item = listbox.get(i)
+            splited = item.split(' - ')
+            name = splited[0].split(')    ')[1]
+            type = splited[1]
+            count = splited[2]
+            place = splited[3]
+
+            for i in items:
+                if i.name == name and i.type == type and i.count == count and i.place == place:
+                    items.remove(i)
+            with open('data.txt', 'w') as f:
+                f.write(Item.serilize(items))
+                f.close()
+        win.destroy()
+        show_data(root, items)
+    btn = Button(win, text="delete", command=selected_item)
     listbox.pack(fill='x', expand=True, pady=30)
+    btn.pack()
     submit_button = ttk.Button(win, text="Search", command=search_clicked)
     submit_button.pack(fill='y', expand=True, pady=10)
 
